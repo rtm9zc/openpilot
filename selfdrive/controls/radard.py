@@ -17,6 +17,8 @@ from common.services import service_list
 from common.realtime import sec_since_boot, set_realtime_priority, Ratekeeper
 from common.kalman.ekf import EKF, SimpleSensor
 
+from sys import argv
+
 radar_type = os.getenv("RADAR")
 if radar_type is not None:
   exec('from selfdrive.radar.'+car_type+'.interface import RadarInterface')
@@ -46,7 +48,7 @@ class EKFV1D(EKF):
 
 
 # fuses camera and radar data for best lead detection
-def radard_thread(gctx=None):
+def radard_thread(gctx=None, radarVision=1.0):
   set_realtime_priority(1)
 
   context = zmq.Context()
@@ -56,7 +58,7 @@ def radard_thread(gctx=None):
   live100 = messaging.sub_sock(context, service_list['live100'].port)
 
   PP = PathPlanner(model)
-  RI = RadarInterface()
+  RI = RadarInterface(radarVision)
 
   # *** publish live20 and liveTracks
   live20 = messaging.pub_sock(context, service_list['live20'].port)
@@ -225,8 +227,11 @@ def radard_thread(gctx=None):
 
     rk.monitor_time()
 
-def main(gctx=None):
-  radard_thread(gctx)
+def main(gctx=None, radarVision=1.0):
+  radard_thread(gctx, radarVision)
 
 if __name__ == "__main__":
-  main()
+  if len(argv) > 1:
+    main(None, argv[1])
+  else:
+    main()

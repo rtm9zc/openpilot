@@ -52,6 +52,9 @@ class Maneuver(object):
       d_rel = distance_lead - distance if self.lead_relevancy else 200. 
       v_rel = speed_lead - speed if self.lead_relevancy else 0. 
 
+      if d_rel <= 0.0:
+          print "CRASH DETECTED OH SHIIIIT"
+          return (None, plot)
       if last_live100:
         # print last_live100
         #develop plots

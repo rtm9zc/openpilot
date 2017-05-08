@@ -20,7 +20,7 @@ def _create_radard_can_parser():
   return CANParser(dbc_f, signals, checks)
 
 class RadarInterface(object):
-  def __init__(self):
+  def __init__(self, sightFactor=1.0):
     # radar
     self.pts = {}
     self.track_id = 0
@@ -30,6 +30,7 @@ class RadarInterface(object):
 
     context = zmq.Context()
     self.logcan = messaging.sub_sock(context, service_list['can'].port)
+    self.sightFactor = sightFactor
 
   def update(self):
     canMonoTimes = []
@@ -56,7 +57,7 @@ class RadarInterface(object):
 
     for ii in self.rcp.msgs_upd:
       cpt = self.rcp.vl[ii]
-      if cpt['LONG_DIST'] < 255:
+      if cpt['LONG_DIST'] < 255*self.sightFactor:
         if ii not in self.pts or cpt['NEW_TRACK']:
           self.pts[ii] = car.RadarState.RadarPoint.new_message()
           self.pts[ii].trackId = self.track_id

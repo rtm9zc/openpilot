@@ -6,8 +6,7 @@ from selfdrive.test.plant import plant
 from selfdrive.config import Conversions as CV, CruiseButtons as CB
 from maneuver import *
 
-maneuvers = [
-  Maneuver(
+oldMans = [Maneuver(
     'while cruising at 40 mph, change cruise speed to 50mph', 
     duration=30.,
     initial_speed = 40. * CV.MPH_TO_MS,
@@ -38,7 +37,9 @@ maneuvers = [
     cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)],
     grade_values = [0., 0., -1.0],
     grade_breakpoints = [0., 10., 11.]
-  ),
+  )]
+
+maneuvers = [
   Maneuver(
     'approaching a 40mph car while cruising at 60mph from 100m away', 
     duration=30., 
@@ -195,6 +196,7 @@ def main(output_dir):
     f.write(view_html)
 
   for i, man in enumerate(maneuvers):
+    print man.title
     score, plot = man.evaluate()
     plot.write_plot(output_dir, "maneuver" + str(i+1).zfill(2))
 
