@@ -30,7 +30,8 @@ class RadarInterface(object):
 
     context = zmq.Context()
     self.logcan = messaging.sub_sock(context, service_list['can'].port)
-    self.sightFactor = sightFactor
+    self.sightFactor = float(sightFactor)
+    self.maxDist = self.sightFactor * 255.0
 
   def update(self):
     canMonoTimes = []
@@ -57,7 +58,7 @@ class RadarInterface(object):
 
     for ii in self.rcp.msgs_upd:
       cpt = self.rcp.vl[ii]
-      if cpt['LONG_DIST'] < 255*self.sightFactor:
+      if cpt['LONG_DIST'] < self.maxDist:
         if ii not in self.pts or cpt['NEW_TRACK']:
           self.pts[ii] = car.RadarState.RadarPoint.new_message()
           self.pts[ii].trackId = self.track_id
