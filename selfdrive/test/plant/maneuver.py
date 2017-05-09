@@ -4,7 +4,6 @@ from maneuverplots import ManeuverPlot
 from plant import Plant
 import numpy as np
 
-
 class Maneuver(object):
   def __init__(self, title, duration, **kwargs):
     # Was tempted to make a builder class

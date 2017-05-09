@@ -23,6 +23,8 @@ from selfdrive.controls.lib.adaptivecruise import AdaptiveCruise
 
 from selfdrive.controls.lib.alertmanager import AlertManager
 
+from sys import argv
+
 car_type = os.getenv("CAR")
 if car_type is not None:
   exec('from selfdrive.car.'+car_type+'.interface import CarInterface')
@@ -34,7 +36,7 @@ V_CRUISE_MIN = 8
 V_CRUISE_DELTA = 8
 V_CRUISE_ENABLE_MIN = 40
 
-def controlsd_thread(gctx, rate=100):  #rate in Hz
+def controlsd_thread(gctx, rate=100, brakeMax=1.0):  #rate in Hz
   # *** log ***
   context = zmq.Context()
   live100 = messaging.pub_sock(context, service_list['live100'].port)
@@ -278,7 +280,10 @@ def controlsd_thread(gctx, rate=100):  #rate in Hz
     CC.enabled = enabled
 
     CC.gas = float(final_gas)
-    CC.brake = float(final_brake)
+    if float(final_brake) <= brakeMax:
+      CC.brake = float(final_brake)
+    else:
+      CC.brake = brakeMax
     CC.steeringTorque = float(final_steer)
 
     CC.cruiseControl.override = True
@@ -360,8 +365,11 @@ def controlsd_thread(gctx, rate=100):  #rate in Hz
     if rk.keep_time():
       prof.display()
 
-def main(gctx=None):
-  controlsd_thread(gctx, 100)
+def main(gctx=None, brakeMax=1.0):
+  controlsd_thread(gctx, 100, brakeMax)
 
 if __name__ == "__main__":
-  main()
+  if (len(argv) > 1):
+    main(None, float(argv[1])*0.85)
+  else:
+    main()

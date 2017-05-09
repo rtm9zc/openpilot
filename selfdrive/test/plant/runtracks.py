@@ -41,16 +41,6 @@ oldMans = [Maneuver(
 
 maneuvers = [
   Maneuver(
-    'approaching a 40mph car while cruising at 60mph from 100m away', 
-    duration=30., 
-    initial_speed = 60. * CV.MPH_TO_MS, 
-    lead_relevancy=True, 
-    initial_distance_lead=100., 
-    speed_lead_values = [40.*CV.MPH_TO_MS, 40.*CV.MPH_TO_MS],
-    speed_lead_breakpoints = [0., 100.],
-    cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
-  ),
-  Maneuver(
     'approaching a 0mph car while cruising at 40mph from 150m away', 
     duration=30., 
     initial_speed = 40. * CV.MPH_TO_MS, 
@@ -61,6 +51,27 @@ maneuvers = [
     cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
   ),
   Maneuver(
+    'steady state following a car at 20m/s, then lead decel to 0mph at 2m/s^2', 
+    duration=40., 
+    initial_speed = 20., 
+    lead_relevancy=True, 
+    initial_distance_lead=503., 
+    speed_lead_values = [20.*CV.MPH_TO_MS, 20.*CV.MPH_TO_MS, 0.*CV.MPH_TO_MS],
+    speed_lead_breakpoints = [0., 15., 25.0],
+    cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
+  ),
+  Maneuver(
+    'approaching a 40mph car while cruising at 60mph from 100m away', 
+    duration=30., 
+    initial_speed = 60. * CV.MPH_TO_MS, 
+    lead_relevancy=True, 
+    initial_distance_lead=100., 
+    speed_lead_values = [40.*CV.MPH_TO_MS, 40.*CV.MPH_TO_MS],
+    speed_lead_breakpoints = [0., 100.],
+    cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
+  ),
+
+  Maneuver(
     'steady state following a car at 20m/s, then lead decel to 0mph at 1m/s^2', 
     duration=50., 
     initial_speed = 20., 
@@ -70,16 +81,7 @@ maneuvers = [
     speed_lead_breakpoints = [0., 15., 35.0],
     cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
   ),
-  Maneuver(
-    'steady state following a car at 20m/s, then lead decel to 0mph at 2m/s^2', 
-    duration=50., 
-    initial_speed = 20., 
-    lead_relevancy=True, 
-    initial_distance_lead=35., 
-    speed_lead_values = [20.*CV.MPH_TO_MS, 20.*CV.MPH_TO_MS, 0.*CV.MPH_TO_MS],
-    speed_lead_breakpoints = [0., 15., 25.0],
-    cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
-  ),
+  
   Maneuver(
     'starting at 0mph, approaching a stopped car 100m away', 
     duration=30., 
@@ -184,7 +186,7 @@ css_style = """
 }
 """
 
-def main(output_dir):
+def main(output_dir, testType=None):
   view_html = "<html><head><style>%s</style></head><body><table>" % (css_style,)
   for i, man in enumerate(maneuvers):
     view_html += "<tr><td class='maneuver_title' colspan=5><div>%s</div></td></tr><tr>" % (man.title,)
@@ -197,7 +199,7 @@ def main(output_dir):
 
   for i, man in enumerate(maneuvers):
     print man.title
-    score, plot = man.evaluate()
+    score, plot = man.evaluate() 
     plot.write_plot(output_dir, "maneuver" + str(i+1).zfill(2))
 
 if __name__ == "__main__":
