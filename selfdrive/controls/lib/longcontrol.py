@@ -155,9 +155,9 @@ class LongControl(object):
     self.Ui_accel_cmd = 0.
     self.v_pid = v_pid
 
-  def update(self, enabled, v_ego, v_cruise, v_target_lead, a_target, jerk_factor, VP):
+  def update(self, enabled, v_ego, v_cruise, v_target_lead, a_target, jerk_factor, VP, brakeFactor=1.0):
     brake_max_bp = [0., 5., 20., 100.]  # speeds     
-    brake_max_v = [1.0, 1.0, 0.8, 0.8]  # values
+    brake_max_v = [1.0*brakeFactor, 1.0*brakeFactor, 0.8*brakeFactor, 0.8*brakeFactor]  # values
 
     # brake and gas limits
     brake_max = interp(v_ego, brake_max_bp, brake_max_v)

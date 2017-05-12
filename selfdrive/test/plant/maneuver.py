@@ -21,12 +21,13 @@ class Maneuver(object):
     self.duration = duration
     self.title = title
 
-  def evaluate(self):
+  def evaluate(self, accel=1.0):
     """runs the plant sim and returns (score, run_data)"""
     plant = Plant(
       lead_relevancy = self.lead_relevancy,
       speed = self.speed,
-      distance_lead = self.distance_lead
+      distance_lead = self.distance_lead,
+      accelFactor = accel
     )
 
     last_live100 = None

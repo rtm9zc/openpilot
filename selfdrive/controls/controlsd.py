@@ -244,7 +244,7 @@ def controlsd_thread(gctx, rate=100, brakeMax=1.0):  #rate in Hz
     prof.checkpoint("AdaptiveCruise")
 
     # *** gas/brake PID loop ***
-    final_gas, final_brake = LoC.update(enabled, CS.vEgo, v_cruise_kph, AC.v_target_lead, AC.a_target, AC.jerk_factor, VP)
+    final_gas, final_brake = LoC.update(enabled, CS.vEgo, v_cruise_kph, AC.v_target_lead, AC.a_target, AC.jerk_factor, VP, brakeMax)
 
     # *** steering PID loop ***
     final_steer, sat_flag = LaC.update(enabled, CS.vEgo, CS.steeringAngle, CS.steeringPressed, PP.d_poly, angle_offset, VP)
@@ -280,10 +280,7 @@ def controlsd_thread(gctx, rate=100, brakeMax=1.0):  #rate in Hz
     CC.enabled = enabled
 
     CC.gas = float(final_gas)
-    if float(final_brake) <= brakeMax:
-      CC.brake = float(final_brake)
-    else:
-      CC.brake = brakeMax
+    CC.brake = float(final_brake)
     CC.steeringTorque = float(final_steer)
 
     CC.cruiseControl.override = True
@@ -369,7 +366,9 @@ def main(gctx=None, brakeMax=1.0):
   controlsd_thread(gctx, 100, brakeMax)
 
 if __name__ == "__main__":
-  if (len(argv) > 1):
-    main(None, float(argv[1])*0.85)
+  if (len(argv) == 2):
+    main(None, float(argv[1]))
+  elif (len(argv) == 3):
+    main(None, float(argv[1]), float(argv[2]))
   else:
     main()

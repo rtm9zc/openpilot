@@ -186,7 +186,7 @@ css_style = """
 }
 """
 
-def main(output_dir, testType=None):
+def main(output_dir, accelFactor=1.0, testType=None):
   view_html = "<html><head><style>%s</style></head><body><table>" % (css_style,)
   for i, man in enumerate(maneuvers):
     view_html += "<tr><td class='maneuver_title' colspan=5><div>%s</div></td></tr><tr>" % (man.title,)
@@ -199,13 +199,15 @@ def main(output_dir, testType=None):
 
   for i, man in enumerate(maneuvers):
     print man.title
-    score, plot = man.evaluate() 
+    score, plot = man.evaluate(accelFactor) 
     plot.write_plot(output_dir, "maneuver" + str(i+1).zfill(2))
 
 if __name__ == "__main__":
   if len(sys.argv) <= 1:
     print "Usage:", sys.argv[0], "<output_dir>"
     exit(1)
-
-  main(sys.argv[1])
+  elif len(sys.argv) == 2:
+    main(sys.argv[1])
+  elif len(sys.argv) == 3:
+    main(sys.argv[1], float(sys.argv[2]))
 

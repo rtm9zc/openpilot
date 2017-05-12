@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import struct
-
+from sys import argv
 import zmq
 import numpy as np
 
@@ -80,7 +80,8 @@ def get_car_can_parser():
 class Plant(object):
   messaging_initialized = False
 
-  def __init__(self, lead_relevancy=False, rate=100, speed=0.0, distance_lead=2.0):
+  def __init__(self, lead_relevancy=False, rate=100, speed=0.0, distance_lead=2.0, accelFactor=1.0):
+    self.accelFactor=accelFactor
     self.rate = rate
     self.civic = False
     self.brake_only = False
@@ -169,6 +170,7 @@ class Plant(object):
 
     # ******** run the car ********
     speed, acceleration = car_plant(self.distance_prev, self.speed_prev, grade, gas, brake)
+    acceleration = acceleration*self.accelFactor
     standstill = (speed == 0)
     distance = self.distance_prev + speed * self.ts
     speed = self.speed_prev + self.ts * acceleration
