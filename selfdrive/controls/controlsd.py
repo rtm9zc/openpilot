@@ -367,7 +367,7 @@ def main(gctx=None, brakeMax=1.0):
 
 if __name__ == "__main__":
   if (len(argv) == 2):
-    main(None, float(argv[1]))
+    main(None, eval(argv[1]))
   elif (len(argv) == 3):
     main(None, float(argv[1]), float(argv[2]))
   else:

@@ -1,11 +1,12 @@
 #!/bin/bash
 
 accelTest=0
-accelParam=0
+accelParam="1.0"
 brakeTest=0
-brakeParam=0
+brakeParam="1.0"
 visionTest=0
-visionParam=0
+visionParam="1.0"
+
 
 i=0
 nArgs=$#
@@ -67,5 +68,5 @@ if [[ "$accelTest" -eq 1 ]]; then
 	echo ACCEL TEST, ACCEL MAGNITUDE REDUCED BY FACTOR OF $accelParam
 	MPLBACKEND=svg ./runtracks.py out $accelParam
 else
-	MPLBACKEND=svg ./runtracks.py out
+	MPLBACKEND=svg ./runtracks.py out 1.0 $visionParam $brakeParam
 fi

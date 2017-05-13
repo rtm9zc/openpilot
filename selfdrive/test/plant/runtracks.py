@@ -186,8 +186,8 @@ css_style = """
 }
 """
 
-def main(output_dir, accelFactor=1.0, testType=None):
-  view_html = "<html><head><style>%s</style></head><body><table>" % (css_style,)
+def main(output_dir, accelFactor=1.0, visionFactor=1.0, brakeFactor=1.0):
+  """view_html = "<html><head><style>%s</style></head><body><table>" % (css_style,)
   for i, man in enumerate(maneuvers):
     view_html += "<tr><td class='maneuver_title' colspan=5><div>%s</div></td></tr><tr>" % (man.title,)
     for c in ['distance.svg', 'speeds.svg', 'acceleration.svg', 'pedals.svg', 'pid.svg']:
@@ -195,12 +195,26 @@ def main(output_dir, accelFactor=1.0, testType=None):
     view_html += "</tr>"
 
   with open(os.path.join(output_dir, "index.html"), "w") as f:
-    f.write(view_html)
+    f.write(view_html)"""
 
-  for i, man in enumerate(maneuvers):
+  theMove = Maneuver(
+    'approaching a 0mph car while cruising at 40mph from 150m away', 
+    duration=30., 
+    initial_speed = 40. * CV.MPH_TO_MS, 
+    lead_relevancy=True, 
+    initial_distance_lead=150., 
+    speed_lead_values = [0.*CV.MPH_TO_MS, 0.*CV.MPH_TO_MS],
+    speed_lead_breakpoints = [0., 100.],
+    cruise_button_presses = [(CB.DECEL_SET, 1.2), (0, 1.3)]
+  )
+
+  score, plot = theMove.evaluate(accelFactor)
+  print "RESULT:", visionFactor, brakeFactor, score
+
+  """for i, man in enumerate(maneuvers):
     print man.title
     score, plot = man.evaluate(accelFactor) 
-    plot.write_plot(output_dir, "maneuver" + str(i+1).zfill(2))
+    plot.write_plot(output_dir, "maneuver" + str(i+1).zfill(2))"""
 
 if __name__ == "__main__":
   if len(sys.argv) <= 1:
@@ -210,4 +224,6 @@ if __name__ == "__main__":
     main(sys.argv[1])
   elif len(sys.argv) == 3:
     main(sys.argv[1], float(sys.argv[2]))
+  elif len(sys.argv) == 5:
+    main(sys.argv[1], float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]))
 

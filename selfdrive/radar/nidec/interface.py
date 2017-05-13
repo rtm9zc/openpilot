@@ -30,7 +30,7 @@ class RadarInterface(object):
 
     context = zmq.Context()
     self.logcan = messaging.sub_sock(context, service_list['can'].port)
-    self.sightFactor = float(sightFactor)
+    self.sightFactor = eval(sightFactor)
     self.maxDist = self.sightFactor * 255.0
 
   def update(self):

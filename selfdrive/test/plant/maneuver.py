@@ -53,8 +53,8 @@ class Maneuver(object):
       v_rel = speed_lead - speed if self.lead_relevancy else 0. 
 
       if d_rel <= 0.0:
-          print "CRASH DETECTED OH SHIIIIT"
-          return (None, plot)
+          print "CRASH DETECTED"
+          return (0, plot)
       if last_live100:
         # print last_live100
         #develop plots
@@ -69,6 +69,6 @@ class Maneuver(object):
           jerk_factor=last_live100.jerkFactor,
           a_target_min=last_live100.aTargetMin, a_target_max=last_live100.aTargetMax)
     
-    return (None, plot)
+    return (1, plot)
 
 
